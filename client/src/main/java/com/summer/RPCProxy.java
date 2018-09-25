@@ -14,13 +14,13 @@ public class RPCProxy {
 
         return  (T) Proxy.newProxyInstance(RPCProxy.class.getClassLoader(), new Class<?>[]{clazz}, new InvocationHandler() {
             @Override
-            public Object invoke(Object arg0, Method arg1, Object[] arg2) throws Throwable {
+            public Object invoke(Object arg0, Method method, Object[] parameters) throws Throwable {
                 Socket socket = new Socket(ip, port);
                 ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 out.writeUTF(id);
-                out.writeUTF(arg1.getName());
-                out.writeObject(arg1.getParameterTypes());
-                out.writeObject(arg2);
+                out.writeUTF(method.getName());
+                out.writeObject(method.getParameterTypes());
+                out.writeObject(parameters);
                 ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
                 return in.readObject();
             }
