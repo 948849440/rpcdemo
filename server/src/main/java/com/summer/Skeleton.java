@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Skeleton {
 
     private static Skeleton skeleton = new Skeleton();
-    private Map<String,SkeletonNet> netCache = new ConcurrentHashMap<String, SkeletonNet>();
+    private Map<String,SkeletonNet> netCache = new ConcurrentHashMap<>();
 
     private int port;
 
@@ -34,6 +34,7 @@ public class Skeleton {
     public void start(){
         try {
             ServerSocket serverSocket = new ServerSocket(port);
+            System.out.println("server start");
             while (true){
                 Socket socket = serverSocket.accept();
                 new Thread(()->{
@@ -45,15 +46,14 @@ public class Skeleton {
                             throw new Exception("no cache");
                         }
                         SkeletonNet skeletonNet = netCache.get(id);
-                        skeletonNet.setSocket(socket);
-                        skeletonNet.start();
+                        skeletonNet.start(socket,objIn);
 
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                });
+                }).start();
             }
         } catch (IOException e) {
             e.printStackTrace();
